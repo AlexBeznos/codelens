@@ -1,0 +1,11 @@
+.header {
+  display: flex;
+  height: 52px;
+  line-height: 52px;
+  border-bottom: lightgray 1px solid;
+  width: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: flex-end;
+}

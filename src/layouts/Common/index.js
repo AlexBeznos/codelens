@@ -3,6 +3,7 @@ import firebaseApp from 'firebase/app';
 import AuthorizedLayout from '../Authorized';
 import UnauthorizedLayout from '../Unauthorized';
 import useUser from '../../hooks/useUser';
+import UserContext from '../../contexts/User';
 import credentials from './credentials';
 
 firebaseApp.initializeApp(credentials);
@@ -14,7 +15,13 @@ function CommonLayout() {
     return 'loading...';
   }
 
-  return user ? <AuthorizedLayout /> : <UnauthorizedLayout />;
+  return user ? (
+    <UserContext.Provider value={user}>
+      <AuthorizedLayout />
+    </UserContext.Provider>
+  ) : (
+    <UnauthorizedLayout />
+  );
 }
 
 export default CommonLayout;
