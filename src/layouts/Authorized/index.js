@@ -5,6 +5,7 @@ import Name from '../../components/Name';
 import Header from '../../components/Header';
 import UserContext from '../../contexts/User';
 import useAuth from '../../hooks/useAuth';
+import EditPane from '../EditPane';
 
 const StyledName = styled(Name)`
   margin-right: 16px;
@@ -20,6 +21,8 @@ function Authorized() {
         <StyledName>{user.displayName}</StyledName>
         <Avatar src={user.photoURL} alt={user.displayName} />
       </Header>
+
+      <EditPane />
       <button onClick={() => signOut()}>sign out</button>
     </div>
   );
