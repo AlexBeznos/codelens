@@ -1,16 +1,22 @@
 import React, { useState, useRef } from 'react';
+import useThrottle from '../../hooks/useThrottle';
 import { Editor } from 'slate-react';
 import { Value } from 'slate';
-
 import data from './data';
 
 function EditPane() {
-  const [value, setValue] = useState(Value.fromJSON(data));
   const editorRef = useRef();
+  const [value, setValue] = useState(() => Value.fromJSON(data));
+  const pushOperation = useThrottle(operations => {
+    console.log('send it', operations);
+  }, 500);
 
-  const onChange = (change) => {
-    console.log('_______________');
-    console.log(change.operations.toJS());
+  function onChange(change) {
+    change.operations
+      .filter(e => e.get('type') !== 'set_selection')
+      .toJS()
+      .forEach(pushOperation);
+
     setValue(change.value);
   }
 
@@ -21,7 +27,7 @@ function EditPane() {
       value={value}
       onChange={onChange}
     />
-  )
+  );
 }
 
 export default EditPane;

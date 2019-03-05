@@ -6,7 +6,7 @@ function UnauthorizedLayout() {
 
   return (
     <div>
-      <button onClick={() => authWithGoogle()}>auth with google</button>
+      <button onClick={authWithGoogle}>auth with google</button>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import styled from 'styled-components/macro';
 import Avatar from '../../components/Avatar';
 import Name from '../../components/Name';
 import Header from '../../components/Header';
+import Popover from '../../components/Popover';
 import UserContext from '../../contexts/User';
 import useAuth from '../../hooks/useAuth';
 import EditPane from '../EditPane';
@@ -18,12 +19,19 @@ function Authorized() {
   return (
     <div>
       <Header>
-        <StyledName>{user.displayName}</StyledName>
-        <Avatar src={user.photoURL} alt={user.displayName} />
+        <Popover
+          anchor={
+            <>
+              <StyledName>{user.displayName}</StyledName>
+              <Avatar src={user.photoURL} alt={user.displayName} />
+            </>
+          }
+        >
+          <button onClick={signOut}>sign out</button>
+        </Popover>
       </Header>
 
       <EditPane />
-      <button onClick={() => signOut()}>sign out</button>
     </div>
   );
 }
