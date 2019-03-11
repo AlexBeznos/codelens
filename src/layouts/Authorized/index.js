@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { Switch, Redirect, Route } from 'react-router';
 import styled from 'styled-components/macro';
 import Avatar from '../../components/Avatar';
 import Name from '../../components/Name';
@@ -6,7 +7,14 @@ import Header from '../../components/Header';
 import Popover from '../../components/Popover';
 import UserContext from '../../contexts/User';
 import useAuth from '../../hooks/useAuth';
-import EditPane from '../EditPane';
+import EditPane from '../../pages/EditPane';
+import DashboardPage from '../../pages/Dashboard';
+
+const StyledButton = styled.button`
+  &:hover {
+    background: red;
+  }
+`;
 
 const StyledName = styled(Name)`
   margin-right: 16px;
@@ -27,11 +35,17 @@ function Authorized() {
             </>
           }
         >
-          <button onClick={signOut}>sign out</button>
+          <StyledButton onClick={signOut}>sign out</StyledButton>
         </Popover>
       </Header>
 
-      <EditPane />
+      <div>
+        <Switch>
+          <Route exact path="/projects" component={DashboardPage} />
+          <Route path="/projects/:id" component={EditPane} />
+          <Redirect to="/projects" />
+        </Switch>
+      </div>
     </div>
   );
 }

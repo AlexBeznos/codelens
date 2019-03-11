@@ -9,6 +9,7 @@ const StyledContainer = styled.div`
   justify-content: center;
   cursor: pointer;
   outline: 0;
+  z-index: 9;
 `;
 
 const StyledChildrenContainer = styled.div`
@@ -19,7 +20,7 @@ const StyledChildrenContainer = styled.div`
   background: #fff;
   box-shadow: #999 1px 1px 1px 1px;
   margin-top: 4px;
-  z-index: 1;
+  z-index: 9;
   display: none;
   ${StyledContainer}:focus & {
     display: block;
