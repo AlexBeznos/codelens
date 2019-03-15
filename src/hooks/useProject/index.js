@@ -25,7 +25,7 @@ function useProject() {
     if (!!id) {
       const projectRef = firebase.database().ref(`/projects/${id}`);
       const onValue = snapshot => {
-        setState(snapshot.val());
+        setState({ uid: id, ...snapshot.val() });
       };
 
       projectRef.on('value', onValue);
