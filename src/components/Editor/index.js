@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import 'firebase/database';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/monokai.css';
@@ -10,10 +10,10 @@ import 'codemirror/mode/jsx/jsx';
 import 'codemirror/mode/ruby/ruby';
 import 'codemirror/addon/edit/closebrackets';
 import { Controlled as CodeMirror } from 'react-codemirror2';
+import PropTypes from 'prop-types';
 
-import useThrottle from '../../hooks/useThrottle';
-import useProject from '../../hooks/useProject';
-import UserContext from '../../contexts/User';
+import useThrottle from '../../../hooks/useThrottle';
+import UserContext from '../../../contexts/User';
 
 const THEMES = ['monokai', 'solarized', 'oceanic-next'];
 
@@ -24,28 +24,27 @@ const options = {
   autoCloseBrackets: true,
 };
 
-function EditPane() {
-  const { project, isLoading } = useProject();
+function Editor(props) {
   const [value, setValue] = useState(null);
   const [theme, setTheme] = useState(THEMES[0]);
   const user = useContext(UserContext);
+
   const pushToDatabase = useThrottle(values => {
     firebase
       .database()
-      .ref(`projects/${project.uid}`)
+      .ref(`projects/${props.id}`)
       .child('data')
       .set(values.slice(-1)[0]);
   }, 500);
 
-  if (isLoading) return 'loading...';
-  if (!value && !isLoading) setValue(project.data);
-  const isEditable = user.uid === project.currentEditor;
-  const isOwner = user.uid === project.owner;
+  if (!value) setValue(props.data);
+  const isEditable = user.uid === props.currentEditor;
+  const isOwner = user.uid === props.owner;
 
   const currentOptions = {
     ...options,
     theme,
-    mode: project.language,
+    mode: props.language,
     readOnly: !isEditable,
   };
 
@@ -63,14 +62,14 @@ function EditPane() {
   function onEditorChange(e) {
     firebase
       .database()
-      .ref(`projects/${project.uid}`)
+      .ref(`projects/${props.id}`)
       .child('currentEditor')
       .set(e.target.value);
   }
 
   const editorSelect = () => (
-    <select value={project.currentEditor} onChange={onEditorChange}>
-      {project.editors.map(editor => (
+    <select value={props.currentEditor} onChange={onEditorChange}>
+      {props.editors.map(editor => (
         <option value={editor.uid} key={editor.uid}>
           {editor.displayName}
         </option>
@@ -87,7 +86,8 @@ function EditPane() {
       </select>
       {isOwner && editorSelect()}
       <CodeMirror
-        value={isEditable ? value : project.data}
+        value={isEditable ? value : props.data}
+        readOnly={!isEditable}
         options={currentOptions}
         onBeforeChange={onBeforeChange}
       />
@@ -95,4 +95,17 @@ function EditPane() {
   );
 }
 
-export default EditPane;
+Project.propTypes = {
+  value: PropTypes.string.isRequired,
+  mode: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  isReadOnly: PropTypes.bool,
+  theme: PropTypes.string,
+};
+
+Project.defaultPropst = {
+  isReadOnly: false,
+  theme: 'oceanic-next',
+};
+
+export default Project;

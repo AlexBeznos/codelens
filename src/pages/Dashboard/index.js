@@ -3,11 +3,7 @@ import useProjectsList from '../../hooks/useProjectList';
 import ProjectCard from '../../components/ProjectCard';
 
 function DashboardPage() {
-  const { projects, isLoading } = useProjectsList();
-
-  if (isLoading) {
-    return 'loading...';
-  }
+  const projects = useProjectsList();
 
   return (
     <div>

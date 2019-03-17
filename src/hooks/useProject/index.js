@@ -1,40 +1,13 @@
-import { useReducer, useEffect } from 'react';
 import useReactRouter from 'use-react-router';
 import firebase from 'firebase/app';
 import 'firebase/database';
+import { createFirebaseResource } from '../../utils/cache';
 
-const initialState = {
-  isLoading: true,
-  project: null,
-};
+const projectResource = createFirebaseResource(id =>
+  firebase.database().ref(`/projects/${id}`),
+);
 
-function reducer(state = initialState, project) {
-  return {
-    ...state,
-    isLoading: false,
-    project,
-  };
+export default function useProject() {
+  const { id } = useReactRouter().match.params;
+  return projectResource.read(id);
 }
-
-function useProject() {
-  const [state, setState] = useReducer(reducer, initialState);
-  const { match } = useReactRouter();
-  const { id } = match.params;
-
-  useEffect(() => {
-    if (!!id) {
-      const projectRef = firebase.database().ref(`/projects/${id}`);
-      const onValue = snapshot => {
-        setState({ uid: id, ...snapshot.val() });
-      };
-
-      projectRef.on('value', onValue);
-
-      return () => projectRef.off('value', onValue);
-    }
-  }, [id]);
-
-  return state;
-}
-
-export default useProject;
