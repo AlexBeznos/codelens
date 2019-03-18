@@ -31,7 +31,7 @@ function Project(props) {
   const pushToDatabase = useThrottle(values => {
     firebase
       .database()
-      .ref(`projects/${props.id}`)
+      .ref(`projects/${props.uid}`)
       .child('data')
       .set(values.slice(-1)[0]);
   }, 500);

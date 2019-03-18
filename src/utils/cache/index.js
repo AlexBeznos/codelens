@@ -26,7 +26,7 @@ export function createFirebaseResource(refCreator) {
   const onceResource = createResource(id =>
     refCreator(id)
       .once('value')
-      .then(snapshot => snapshot.val()),
+      .then(snapshot => ({ uid: id, ...snapshot.val() })),
   );
 
   return {
@@ -38,7 +38,7 @@ export function createFirebaseResource(refCreator) {
         const ref = refCreator(id);
 
         function onValue(snapshot) {
-          setValue(snapshot.val());
+          setValue({ uid: id, ...snapshot.val() });
         }
 
         ref.on('value', onValue);
