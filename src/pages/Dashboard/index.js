@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import useProjectsList from '../../hooks/useProjectList';
 import ProjectCard from '../../components/ProjectCard';
+import UserContext from '../../contexts/User';
 
 function DashboardPage() {
-  const projects = useProjectsList();
+  const user = useContext(UserContext);
+  const projects = useProjectsList(user.uid);
 
   return (
     <div>
@@ -11,8 +13,8 @@ function DashboardPage() {
       <div>
         {projects.map(project => (
           <ProjectCard
-            key={project.id}
-            id={project.id}
+            key={project.uid}
+            id={project.uid}
             title={project.title}
             mode={project.language}
           />
