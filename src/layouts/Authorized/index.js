@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { Suspense, useContext } from 'react';
 import { Switch, Redirect, Route } from 'react-router';
 import styled from 'styled-components/macro';
 import Avatar from '../../components/Avatar';
@@ -7,7 +7,7 @@ import Header from '../../components/Header';
 import Popover from '../../components/Popover';
 import UserContext from '../../contexts/User';
 import useAuth from '../../hooks/useAuth';
-import EditPane from '../../pages/EditPane';
+import ProjectPage from '../../pages/Project';
 import DashboardPage from '../../pages/Dashboard';
 
 const StyledButton = styled.button`
@@ -41,8 +41,16 @@ function Authorized() {
 
       <div>
         <Switch>
-          <Route exact path="/projects" component={DashboardPage} />
-          <Route path="/projects/:id" component={EditPane} />
+          <Route exact path="/projects">
+            <Suspense fallback="loading...">
+              <DashboardPage />
+            </Suspense>
+          </Route>
+          <Route path="/projects/:id">
+            <Suspense fallback="loading...">
+              <ProjectPage />
+            </Suspense>
+          </Route>
           <Redirect to="/projects" />
         </Switch>
       </div>
